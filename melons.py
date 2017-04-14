@@ -1,5 +1,6 @@
 """Classes for melon orders."""
 import random
+import datetime
 
 class AbstractMelonOrder(object):
     def __init__(self, species, order_type, qty, tax):
@@ -11,8 +12,14 @@ class AbstractMelonOrder(object):
         self.order_type = order_type
         self.tax = tax
 
+        if self.qty > 100:
+            raise TooManyMelonErrors("Too many melons!")
+
     def get_base_price(self):
-        base_price = random.randint(5,10)
+        base_price = 5
+        if datetime.datetime.today().weekday() in range(0, 5) and datetime.datetime.now().hour in range(8, 12):
+            base_price += 4
+
         return base_price
 
     def get_total(self):
@@ -71,3 +78,10 @@ class InternationalMelonOrder(AbstractMelonOrder):
         """Return the country code."""
 
         return self.country_code
+
+class TooManyMelonErrors(ValueError):
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
